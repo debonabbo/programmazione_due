@@ -20,6 +20,16 @@ IntSortedSetADT mkSSet() {
 _Bool dsSSet(IntSortedSetADT *ssptr) {
     if(ssptr){
         if(*ssptr){
+            if(!isEmptySSet(*ssptr)){
+                ListNodePtr a = (*ssptr)->first;
+                ListNodePtr next;
+
+                while(a){
+                    next = a->next;
+                    free(a);
+                    a = next;
+                }
+            }
             free(*ssptr);
             *ssptr = NULL;
             return true;

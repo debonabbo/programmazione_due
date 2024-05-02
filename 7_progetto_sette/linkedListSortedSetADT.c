@@ -55,6 +55,16 @@ SortedSetADTptr mkSSet(int (*compare)(void*, void*)) {
 _Bool dsSSet(SortedSetADTptr* ssptr) {
     if(ssptr){
         if(*ssptr){
+            if(!isEmptySSet(*ssptr)){
+                ListNodePtr a = (*ssptr)->first;
+                ListNodePtr next;
+
+                while(a){
+                    next = a->next;
+                    free(a);
+                    a = next;
+                }
+            }
             free(*ssptr);
             *ssptr = NULL;
             return true;

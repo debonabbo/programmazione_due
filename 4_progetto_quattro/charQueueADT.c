@@ -33,7 +33,20 @@ CharQueueADT mkQueue() {
 
 /* @brief Distrugge la coda, recuperando la memoria */
 void dsQueue(CharQueueADT *pq) {
-    free(*pq);
+    if(*pq){
+        if(!isEmpty(*pq)){
+            ListNodePtr a = (*pq)->front;
+            ListNodePtr next;
+
+            while(a){
+                next = a->next;
+                free(a);
+                a = next;
+            }
+        }
+
+        free(*pq);
+    }
     *pq = NULL;
 
     return; 

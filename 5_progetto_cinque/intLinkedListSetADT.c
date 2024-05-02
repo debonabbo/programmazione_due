@@ -1,6 +1,5 @@
 #include <stdlib.h>
 #include <stdbool.h>
-#include <stdio.h>
 
 #include "intSetADT.h"
 #include "intLinkedListSet.h"
@@ -31,6 +30,16 @@ IntSetADT mkSet() {
 _Bool dsSet(IntSetADT *sp) {
     if(sp){
         if(*sp){
+            if(!isEmptySet(*sp)){
+                ListNodePtr a = (*sp)->front;
+                ListNodePtr next;
+
+                while(a){
+                    next = a->next;
+                    free(a);
+                    a = next;
+                }
+            }
             free(*sp);
             *sp = NULL;
             return true;
