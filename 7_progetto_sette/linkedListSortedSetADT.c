@@ -455,7 +455,6 @@ _Bool sset_extractMin(SortedSetADTptr ss, void**ptr) {
     return false;    
 }
 
-// toglie e restituisce l'ultimo elemento (0 se lista vuota, -1 se errore, 1 se restituisce elemento)
 _Bool sset_extractMax(SortedSetADTptr ss, void**ptr) {
     if(ss){
         if(ss->last){
