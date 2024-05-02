@@ -39,7 +39,7 @@ _Bool sset_add(IntSortedSetADT ss, const int elem) {
                 a = ss->first;
 
             //Recupero la posizione ottimale per l'elemento
-            while(a->next && a->next->elem < elem)
+            while(a->next && a->next->elem <= elem)
                 a = a->next;
 
             if(a->elem == elem)     //L'elemento c'era gia'
@@ -321,7 +321,6 @@ IntSortedSetADT sset_intersection(const IntSortedSetADT s1, const IntSortedSetAD
 
             return newset;
         }
-        
     }
     return NULL;
 }

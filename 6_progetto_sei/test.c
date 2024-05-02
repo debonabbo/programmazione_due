@@ -154,6 +154,25 @@ int check_sset_add() {
         dsSSet(&sptr);
     }
 
+    if(passed){
+        _Bool rv;
+        IntSortedSetADT sptr = mkSSet();  
+        rv = sset_add(sptr,5);
+        rv = sset_add(sptr,6);
+        rv = sset_add(sptr,7);   
+        rv = sset_add(sptr,6);
+        if (rv || sptr->size!=3) {
+            printf("set_add({5,6,7},6)\n"); 
+            printf("FAILED\n");
+            printf("EXPECTED: %d WITH SIZE %d\n", 0, 3);
+            printf("RESULT:%d WITH SIZE %d\n", rv, sptr->size);  
+            passed=0;   
+        } else {
+            // printf("OK\n");
+        }
+        dsSSet(&sptr);
+    }
+
     return passed;
 }
 
