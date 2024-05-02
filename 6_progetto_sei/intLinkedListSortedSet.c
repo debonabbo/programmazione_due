@@ -314,8 +314,6 @@ IntSortedSetADT sset_intersection(const IntSortedSetADT s1, const IntSortedSetAD
                             a = a->next;
                         }
                     }
-
-                    return newset;
                 }
             }
 

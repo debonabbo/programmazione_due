@@ -361,8 +361,6 @@ SortedSetADTptr sset_intersection(const SortedSetADT* s1, const SortedSetADT* s2
                             a = a->next;
                         }
                     }
-
-                    return newset;
                 }
             }
 
