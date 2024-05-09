@@ -422,13 +422,7 @@ _Bool sset_extractMax(IntSortedSetADT ss, int *ptr) {
             *ptr = ss->last->elem;
 
             //Rimuovo l'ultimo elemento
-            ListNodePtr a = ss->first;
-            while(a->next != ss->last)
-                a = a->next;
-            free(ss->last);
-            a->next = NULL;
-            ss->last = a;
-            ss->size--;
+            sset_remove(ss, ss->last->elem);
             return true;
         }
     }
