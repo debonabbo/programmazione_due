@@ -53,14 +53,17 @@ int compareInt(void *a, void *b){
 
 //Trova il nodo ottimale per l'elemento ELEM all'interno del set
 //Se il nodo non esiste SI FERMA al nodo padre
-TreeNodePtr FindNodeFor_rec(SortedSetADTptr ss, void* elem, TreeNodePtr nodo){
+TreeNodePtr FindNodeFor_rec(void* elem, TreeNodePtr nodo, 
+                            int (*compare)(void*, void*))
+{
     if(nodo){
-        if (ss->compare(nodo->elem, elem) == 1){
+        int confronto = compare(nodo->elem, elem);
+        if (confronto == 1){
             if(nodo->left)
-                return FindNodeFor_rec(ss, elem, nodo->left);
-        } else if(ss->compare(nodo->elem, elem) == -1){
+                return FindNodeFor_rec(compare, elem, nodo->left);
+        } else if(confronto == -1){
             if(nodo->right)
-                return FindNodeFor_rec(ss, elem, nodo->right);
+                return FindNodeFor_rec(compare, elem, nodo->right);
         }
     }
     //Restituisce il nodo con ELEM se nodo->elem == elem
@@ -72,7 +75,7 @@ TreeNodePtr FindNodeFor_rec(SortedSetADTptr ss, void* elem, TreeNodePtr nodo){
 //Se il nodo non esiste si ferma al nodo padre
 TreeNodePtr FindNodeFor(SortedSetADTptr ss, void* elem){
     if(ss){
-        return FindNodeFor_rec(ss, elem, ss->root);
+        return FindNodeFor_rec(elem, ss->root, ss->compare);
     }
 
     return NULL;
@@ -134,9 +137,6 @@ _Bool sset_add(SortedSetADTptr ss, void* elem) {
     return false;
 }  
 
-void sset_extractMin_rec(TreeNodePtr* cur, void**ptr, int (*compare)(void*, void*));
-void sset_extractMax_rec(TreeNodePtr* cur, void**ptr, int (*compare)(void*, void*));
-
 // funzione ausiliaria che toglie un elemento da un sottoalbero
 _Bool sset_remove_rec(TreeNodePtr* cur, void* elem, int (*compare)(void*, void*)) {
     if (*cur == NULL) return false;
@@ -166,25 +166,71 @@ _Bool sset_remove(SortedSetADTptr ss, void* elem) {
 
 // controlla se un elemento appartiene all'insieme
 int sset_member(const SortedSetADT* ss, void* elem) {
+    if(ss){
+        TreeNodePtr nodo_ottimale = FindNodeFor(ss, elem);
+
+        if(nodo_ottimale && nodo_ottimale->elem == elem){
+            return 1;   //Il nodo trovato coincide con quello dell'elemento
+        }
+        
+        return 0; //Il nodo non e' quello dell'elemento o non esiste
+    }
     return -1;
 }
     
 // controlla se l'insieme e' vuoto    
 int isEmptySSet(const SortedSetADT* ss) {
+    if(ss){
+        if(ss->size > 0)
+            return 1;
+        return 0;
+    }
     return -1;
 } 
 
 // restituisce il numero di elementi presenti nell'insieme
 int sset_size(const SortedSetADT* ss) {
+    if(ss){
+        return ss->size;
+    }
     return -1;
 } 
 
 _Bool sset_extract(SortedSetADTptr ss, void**ptr) { // toglie e restituisce un elemento a caso dall'insieme
     return false;
-} 
+}
+
+_Bool sset_equals_rec2(TreeNodePtr nodo, const SortedSetADTptr* s2){
+    if(nodo){
+        if(sset_member(s2, nodo->elem)){    //Se l'elemento attuale c'e' nel s2
+            return sset_equals_rec(nodo->left, s2) && sset_equals_rec(nodo->right, s2);
+        }
+
+        //Restituisco false SOLO se l'elemento attuale non c'e' in s2
+        return false;
+    }
+
+    return true;
+}
+
+_Bool sset_equals_rec1(SortedSetADT* s1, SortedSetADT* s2, TreeNodePtr nodo){
+    if(nodo){
+        if(sset_equals_rec2(nodo, s2)){
+            return sset_equals_rec1(s1, s2, nodo->left) && sset_equals_rec1(s1, s2, nodo->right);
+        }
+
+        // Restituisco false SOLO se il nodo attuale non c'e' in s2
+        return false;
+    }
+
+    return true;
+}
 
 // controlla se due insiemi sono uguali
 int sset_equals(const SortedSetADT* s1, const SortedSetADT* s2) { 
+    if(s1 && s2){
+        return sset_equals_rec1(s1, s2, s1->root);
+    }
     return -1;
 }
 
@@ -223,11 +269,13 @@ _Bool sset_max(const SortedSetADT* ss, void**ptr) {
     return false;
 }
 
+void sset_extractMin_rec(TreeNodePtr* cur, void**ptr, int (*compare)(void*, void*));
 // toglie e restituisce il primo elemento 
 _Bool sset_extractMin(SortedSetADTptr ss, void**ptr) {
     return false;    
 }
 
+void sset_extractMax_rec(TreeNodePtr* cur, void**ptr, int (*compare)(void*, void*));
 // toglie e restituisce l'ultimo elemento (0 se lista vuota, -1 se errore, 1 se restituisce elemento)
 _Bool sset_extractMax(SortedSetADTptr ss, void**ptr) {
     return false;       
