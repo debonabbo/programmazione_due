@@ -109,6 +109,10 @@ _Bool sset_remove(const IntSortedSetADT ss, const int elem) {
             free(a);
             ss->size--;
 
+            //Se ho rimosso l'ultimo elemento annullo il puntatore a LAST
+            if(ss->size == 0)
+                ss->last = NULL;
+
             return true;
         }
 
@@ -116,6 +120,12 @@ _Bool sset_remove(const IntSortedSetADT ss, const int elem) {
             //Se esiste un elemento successivo e il suo valore e' <= elem
             if(a->next->elem == elem){
                 //Il successivo e' l'elemento da rimuovere
+
+                //Se sto rimuovendo l'ultimo elemento imposto il nuovo last
+                if(ss->last == a->next)
+                    ss->last = a;
+                
+                //Procedo alla rimozione dell'elemento
                 ListNodePtr next = a->next->next;
                 //Lo rimuovo
                 free(a->next);
