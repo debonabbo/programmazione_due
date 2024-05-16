@@ -422,7 +422,6 @@ _Bool sset_extractMin(SortedSetADTptr ss, void**ptr) {
         ss->size--;
         return true;
     }
-    printf("ss vuoto.\n");
     return false;    
 }
 
