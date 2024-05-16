@@ -190,25 +190,14 @@ _Bool subseteq(const IntSetADT set1, const IntSetADT set2) {
             else {
                 if(set1->size <= set2->size){
                     ListNodePtr a = set1->front;
-                    ListNodePtr b = set2->front;
 
-                    int u = 0;
-                    _Bool trovato;
                     while(a){
-                        trovato = false;
-                        while(b && !trovato && u < set1->size){ 
-                            if(a->data == b->data){
-                                trovato = true;
-                                u++;
-                            }
-                            b = b->next;
-                        }
-
+                        if(!set_member(set2, a->data))
+                            return false;
                         a = a->next;
                     }
 
-                    if(u == set1->size)
-                        return true;
+                    return true;
                 }
             }
         }
@@ -223,25 +212,14 @@ _Bool subset(const IntSetADT set1, const IntSetADT set2) {
                 return true;
             else {
                 ListNodePtr a = set1->front;
-                ListNodePtr b = set2->front;
 
-                int u = 0;
-                _Bool trovato;
                 while(a){
-                    trovato = false;
-                    while(b && !trovato && u < set1->size){ 
-                        if(a->data == b->data){
-                            trovato = true;
-                            u++;
-                        }
-                        b = b->next;
-                    }
-
+                    if(!set_member(set2, a->data))
+                        return false;
                     a = a->next;
                 }
 
-                if(u == set1->size)
-                    return true;
+                return true;
             }
         }
     }
