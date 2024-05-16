@@ -59,7 +59,7 @@ int main(int argc, char *argv[]) {
     stampaSet(set,&stampaint);
 
     check = sset_add(set,&n_[8]);
-    printf("\nReadding 8, check = %d\n",check);
+    printf("\nRe-adding 8, check = %d\n",check);
     stampaSet(set,&stampaint);
 
     check = sset_add(set,&n_[5]);
@@ -71,11 +71,11 @@ int main(int argc, char *argv[]) {
     stampaSet(set,&stampaint);
 
     check = sset_add(set,&n_[1]);
-    printf("\nReadding 1, check = %d\n",check);
+    printf("\nRe-adding 1, check = %d\n",check);
     stampaSet(set,&stampaint);
 
     check = sset_add(set,&n_[3]);
-    printf("\nReadding 3, check = %d\n",check);
+    printf("\nRe-adding 3, check = %d\n",check);
     stampaSet(set,&stampaint);
 
     check = sset_min(set,(void**)&ptr);
