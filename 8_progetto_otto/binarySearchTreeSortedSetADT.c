@@ -277,12 +277,12 @@ int sset_equals(const SortedSetADT* s1, const SortedSetADT* s2) {
 }
 
 _Bool sset_subseteq_rec(const TreeNodePtr nodo, const SortedSetADT* s2){
-    bool ret = true;
-    if(nodo->left)
+    bool ret = (sset_member(s2, nodo->elem) == 1);
+    if(ret && nodo->left)
         ret &= sset_subseteq_rec(nodo->left, s2);
-    if(nodo->right)
+    if(ret && nodo->right)
         ret &= sset_subseteq_rec(nodo->right, s2);
-    return ret && (sset_member(s2, nodo->elem) == 1);
+    return ret;
 }
 
 // controlla se il primo insieme e' incluso nel secondo
