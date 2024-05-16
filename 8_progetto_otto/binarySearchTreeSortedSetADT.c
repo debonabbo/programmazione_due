@@ -237,41 +237,12 @@ _Bool sset_extract(SortedSetADTptr ss, void**ptr) {
     return false;
 }
 
-_Bool sset_equals_rec2(TreeNodePtr nodo, const SortedSetADT* s2){
-    if(nodo){
-        if(sset_member(s2, nodo->elem) == 1){    
-            //Se l'elemento attuale c'e' nel s2 procedo 
-            return  sset_equals_rec2(nodo->left, s2) && 
-                    sset_equals_rec2(nodo->right, s2);
-        }
-
-        //Restituisco false SOLO se l'elemento attuale non c'e' in s2
-        return false;
-    }
-
-    return true;
-}
-
-_Bool sset_equals_rec1(const SortedSetADT* s1, const SortedSetADT* s2, TreeNodePtr nodo){
-    if(nodo){
-        //Controllo se il il nodo attuale c'e' nel set 2
-        if(sset_equals_rec2(nodo, s2)){
-            //Procedo sui due rami left e right
-            return  sset_equals_rec1(s1, s2, nodo->left) && 
-                    sset_equals_rec1(s1, s2, nodo->right);
-        }
-
-        // Restituisco false SOLO se il nodo attuale non c'e' in s2
-        return false;
-    }
-
-    return true;
-}
-
 // controlla se due insiemi sono uguali
 int sset_equals(const SortedSetADT* s1, const SortedSetADT* s2) { 
     if(s1 && s2){
-        return sset_equals_rec1(s1, s2, s1->root);
+        if(s1->size == s2->size && sset_subseteq(s1, s2) == 1)
+            return 1;
+        return 0;
     }
     return -1;
 }
