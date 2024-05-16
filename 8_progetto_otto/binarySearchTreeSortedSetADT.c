@@ -280,18 +280,84 @@ int sset_subset(const SortedSetADT* s1, const SortedSetADT* s2) {
     return -1;
 } 
 
+void sset_subtraction_rec(const TreeNodePtr nodo, const SortedSetADT* s2, 
+    SortedSetADTptr newset)
+{
+    if(nodo){
+        if(!sset_member(s2, nodo->elem))
+            sset_add(newset, nodo->elem);   //Aggiungo l'elemento al nuovo set
+        if(nodo->left)      //Avvio la ricorsione sul ramo sinistro
+            sset_subtraction_rec(nodo->left, s2, newset);
+        if(nodo->right)     //Avvio la ricorsione sul ramo destro
+            sset_subtraction_rec(nodo->right, s2, newset);
+    }
+}
+
 // restituisce la sottrazione primo insieme meno il secondo, NULL se errore
 SortedSetADTptr sset_subtraction(const SortedSetADT* s1, const SortedSetADT* s2) {
+    if(s1 && s2){
+        SortedSetADTptr newset = mkSSet(s1->compare);
+        
+        if(newset){
+            //Avvio la ricorsione sul nuovo set partendo dalla radice di s1
+            sset_subtraction_rec(s1->root, s2, newset);
+            return newset;
+        }
+    }
     return NULL;   
 } 
 
+void sset_copy_rec(SortedSetADT* set, const TreeNodePtr nodo){
+    if(set && nodo){
+        sset_add(set, nodo->elem);  //Copio il nodo attuale
+        if(nodo->left)  //Avvio eventuale ricorsione sul ramo sinistro
+            sset_copy_rec(set, nodo->left);
+        if(nodo->right) //Avvio eventuale ricorsione sul ramo destro
+            sset_copy_rec(set, nodo->right);
+    }
+}
+
 // restituisce l'unione di due insiemi, NULL se errore
 SortedSetADTptr sset_union(const SortedSetADT* s1, const SortedSetADT* s2) {
+    if(s1 && s2){
+        SortedSetADTptr newset = mkSSet(s1->compare);
+
+        if(newset){
+            //Avvio la copia del primo set
+            sset_copy_rec(newset, s1->root);
+            //Avvio la copia del secondo set
+            sset_copy_rec(newset, s2->root);
+
+            return newset;
+        }
+    }
     return NULL; 
 } 
 
+void sset_intersection_rec(const TreeNodePtr nodo, const SortedSetADT* s2, 
+    SortedSetADTptr newset)
+{
+    if(nodo){
+        if(sset_member(s2, nodo->elem))
+            sset_add(newset, nodo->elem);   //Aggiungo l'elemento al nuovo set
+        if(nodo->left)      //Avvio la ricorsione sul ramo sinistro
+            sset_intersection_rec(nodo->left, s2, newset);
+        if(nodo->right)     //Avvio la ricorsione sul ramo destro
+            sset_intersection_rec(nodo->right, s2, newset);
+    }
+}
+
 // restituisce l'intersezione di due insiemi, NULL se errore
 SortedSetADTptr sset_intersection(const SortedSetADT* s1, const SortedSetADT* s2) {
+    if(s1 && s2){
+        SortedSetADTptr newset = mkSSet(s1->compare);
+
+        if(newset){
+            //Avvio la ricorsione sul nuovo set partendo dalla radice di s1
+            sset_intersection_rec(s1->root, s2, newset);
+            return newset;
+        }
+    }
     return NULL;
 }
 
