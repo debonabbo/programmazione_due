@@ -456,3 +456,17 @@ _Bool sset_extractMax(SortedSetADTptr ss, void**ptr) {
     }
     return false;       
 }
+
+// restituisce il puntatore dell'elemento se c'e', NULL altrimenti
+void* sset_searchElem(SortedSetADTptr ss, void* elem){
+    if(isEmptySSet(ss) == 0){
+        TreeNodePtr nodo_ottimale = FindNodeFor(ss, elem);
+
+        if(nodo_ottimale && ss->compare(nodo_ottimale->elem, elem) == 0){
+            //Il nodo trovato coincide con quello dell'elemento
+            return nodo_ottimale->elem;
+        }
+    }
+
+    return NULL;
+}
