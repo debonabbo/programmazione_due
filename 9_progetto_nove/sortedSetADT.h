@@ -29,5 +29,6 @@ _Bool sset_min(const SortedSetADT*, void**); // restituisce l'elemento minimo
 _Bool sset_max(const SortedSetADT*, void**); // restituisce l'elemento massimo
 _Bool sset_extractMin(SortedSetADTptr, void**); // toglie e restituisce l'elemento minimo
 _Bool sset_extractMax(SortedSetADTptr, void**); // toglie e restituisce l'elemento massimo
+void* sset_searchElem(SortedSetADTptr ss, void* elem);  // restituisce il puntatore dell'elemento se c'e', NULL altrimenti
 
 #endif
