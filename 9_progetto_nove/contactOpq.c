@@ -1,4 +1,5 @@
 #include "contactOpq.h"
+#include <stdlib.h>
 
 typedef struct contact {
     char *name;
