@@ -30,21 +30,13 @@ void stampaSet(SortedSetADTptr ss, void (*stampaelem)(void*)) {
     }
 }    
 
-int compareElem(void* a, void* b){
-    if(a > b)
-        return 1;
-    else if(a < b)
-        return -1;
-    return 0;
-}
-
 SortedSetADTptr mkSSet(int (*compare)(void*, void*)) {
     SortedSetADTptr set = malloc(sizeof(struct sortedSetADT));
 
     if(set){
         set->first = NULL;
         set->last = NULL;
-        set->compare = compareElem;
+        set->compare = compare;
         set->size = 0;
         return set;
     }
@@ -310,7 +302,7 @@ int sset_subset(const SortedSetADT* s1, const SortedSetADT* s2) {
 
 SortedSetADTptr sset_union(const SortedSetADT* s1, const SortedSetADT* s2) {
     if(s1 && s2){
-        SortedSetADTptr newset = mkSSet(compareElem);
+        SortedSetADTptr newset = mkSSet(s1->compare);
         if(newset){
             ListNodePtr a = s1->first;
             ListNodePtr b = s2->first;
@@ -351,7 +343,7 @@ SortedSetADTptr sset_union(const SortedSetADT* s1, const SortedSetADT* s2) {
 
 SortedSetADTptr sset_intersection(const SortedSetADT* s1, const SortedSetADT* s2) {
     if(s1 && s2){
-        SortedSetADTptr newset = mkSSet(compareElem);
+        SortedSetADTptr newset = mkSSet(s1->compare);
 
         if(newset){
             if(!isEmptySSet(s1) && !isEmptySSet(s2)){
@@ -382,7 +374,7 @@ SortedSetADTptr sset_intersection(const SortedSetADT* s1, const SortedSetADT* s2
 
 SortedSetADTptr sset_subtraction(const SortedSetADT* s1, const SortedSetADT* s2) {
     if(s1 && s2){
-        SortedSetADTptr newset = mkSSet(compareElem);
+        SortedSetADTptr newset = mkSSet(s1->compare);
 
         if(newset){
             if(!isEmptySSet(s1) && !isEmptySSet(s2)){
@@ -470,12 +462,15 @@ _Bool sset_extractMax(SortedSetADTptr ss, void**ptr) {
 
             //Rimuovo l'ultimo elemento
             ListNodePtr a = ss->first;
-            while(a->next != ss->last)
+            while(a && a->next != ss->last)
                 a = a->next;
             free(ss->last);
-            a->next = NULL;
+            if(a)                   //Se size == 1
+                a->next = NULL;
             ss->last = a;
             ss->size--;
+            if(ss->size == 0)       //Se ho rimosso tutto
+                ss->first = NULL;
             return true;
         }
     }
