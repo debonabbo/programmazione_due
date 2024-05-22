@@ -59,7 +59,7 @@ int main(int argc, char *argv[]) {
     stampaSet(set,&stampaint);
 
     check = sset_add(set,&n_[8]);
-    printf("\nRe-adding 8, check = %d\n",check);
+    printf("\nReadding 8, check = %d\n",check);
     stampaSet(set,&stampaint);
 
     check = sset_add(set,&n_[5]);
@@ -71,11 +71,11 @@ int main(int argc, char *argv[]) {
     stampaSet(set,&stampaint);
 
     check = sset_add(set,&n_[1]);
-    printf("\nRe-adding 1, check = %d\n",check);
+    printf("\nReadding 1, check = %d\n",check);
     stampaSet(set,&stampaint);
 
     check = sset_add(set,&n_[3]);
-    printf("\nRe-adding 3, check = %d\n",check);
+    printf("\nReadding 3, check = %d\n",check);
     stampaSet(set,&stampaint);
 
     check = sset_min(set,(void**)&ptr);
@@ -119,6 +119,24 @@ int main(int argc, char *argv[]) {
     printf("\nChecking member 7, check = %d\n",check);
     check = sset_member(set, &n_[8]);
     printf("\nChecking member 8, check = %d\n",check);
+
+    int* found;
+    found = sset_search(set, &n_[5]);
+    printf("\nChecking search 5, ");
+    if (found) printf("found %d\n", *found);
+    else printf("not found\n");
+    found = sset_search(set, &n_[1]);
+    printf("\nChecking search 1, ");
+    if (found) printf("found %d\n", *found);
+    else printf("not found\n");
+    found = sset_search(set, &n_[7]);
+    printf("\nChecking search 7, ");
+    if (found) printf("found %d\n", *found);
+    else printf("not found\n");
+    found = sset_search(set, &n_[8]);
+    printf("\nChecking search 8, ");
+    if (found) printf("found %d\n", *found);
+    else printf("not found\n");
 
     check = sset_remove(set,&n_[8]);
     printf("\nRemoving 8, check = %d\n",check);
@@ -205,8 +223,14 @@ int main(int argc, char *argv[]) {
     set = sset_union(s1,s2);
     printf("\nunion s1 + s2\n");
     stampaSet(set,&stampaint);
-    dsSSet(&set);
 
+    int** arr = (int**)sset_toArray(set);
+    printf("\nAs array:");
+    for (int i=0; i<sset_size(set); ++i) printf(" %d", *arr[i]);
+    printf("\n");
+    free(arr);
+
+    dsSSet(&set);
     dsSSet(&s1);
     dsSSet(&s2);
 

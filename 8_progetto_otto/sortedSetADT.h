@@ -16,6 +16,7 @@ _Bool dsSSet(SortedSetADTptr*); // distrugge l'insieme, recuperando la memoria
 _Bool sset_add(SortedSetADTptr, void*); // aggiunge un elemento all'insieme (restituisce false se l'elemento era gia' presente, true altrimenti)
 _Bool sset_remove(SortedSetADTptr, void*); // toglie un elemento all'insieme (restituisce false se l'elemento non era presente, true altrimenti)
 int sset_member(const SortedSetADT*, void*); // controlla se un elemento appartiene all'insieme
+void* sset_search(const SortedSetADT*, void*); // cerca un elemento nell'insieme che si compara uguale a quello dato, NULL se non trovato
 int isEmptySSet(const SortedSetADT*); // controlla se l'insieme e' vuoto
 int sset_size(const SortedSetADT*); // restituisce il numero di elementi presenti nell'insieme, -1 se NULL
 _Bool sset_extract(SortedSetADTptr, void**); // toglie e restituisce un elemento a caso dall'insieme
@@ -29,5 +30,6 @@ _Bool sset_min(const SortedSetADT*, void**); // restituisce l'elemento minimo
 _Bool sset_max(const SortedSetADT*, void**); // restituisce l'elemento massimo
 _Bool sset_extractMin(SortedSetADTptr, void**); // toglie e restituisce l'elemento minimo
 _Bool sset_extractMax(SortedSetADTptr, void**); // toglie e restituisce l'elemento massimo
+void** sset_toArray(const SortedSetADT*); // crea un array con i contenuti del set (per l'implementazione con ARB in ordine di visita pre-order), NULL se errore
 
 #endif
