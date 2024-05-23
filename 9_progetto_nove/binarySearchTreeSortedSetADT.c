@@ -112,7 +112,7 @@ void dsSSet_rec(TreeNodePtr nodo){
 
 // distrugge l'insieme, recuperando la memoria
 _Bool dsSSet(SortedSetADTptr* ssptr) {
-    if(*ssptr){
+    if(ssptr && *ssptr){
         dsSSet_rec((*ssptr)->root);
         *ssptr = NULL;
         return true;
@@ -209,6 +209,19 @@ int sset_member(const SortedSetADT* ss, void* elem) {
     }
     return -1;
 }
+
+void* sset_search(const SortedSetADT* ss, void* elem){
+    if(isEmptySSet(ss) == 0){
+        TreeNodePtr nodo_ottimale = FindNodeFor(ss, elem);
+
+        if(nodo_ottimale && ss->compare(nodo_ottimale->elem, elem) == 0){
+            //Il nodo trovato coincide con quello dell'elemento
+            return nodo_ottimale->elem;
+        }
+    }
+
+    return NULL;
+}
     
 // controlla se l'insieme e' vuoto    
 int isEmptySSet(const SortedSetADT* ss) {
@@ -284,7 +297,7 @@ void sset_subtraction_rec(const TreeNodePtr nodo, const SortedSetADT* s2,
     SortedSetADTptr newset)
 {
     if(nodo){
-        if(!sset_member(s2, nodo->elem))
+        if(sset_member(s2, nodo->elem) != 1)
             sset_add(newset, nodo->elem);   //Aggiungo l'elemento al nuovo set
         if(nodo->left)      //Avvio la ricorsione sul ramo sinistro
             sset_subtraction_rec(nodo->left, s2, newset);
@@ -338,7 +351,7 @@ void sset_intersection_rec(const TreeNodePtr nodo, const SortedSetADT* s2,
     SortedSetADTptr newset)
 {
     if(nodo){
-        if(sset_member(s2, nodo->elem))
+        if(sset_member(s2, nodo->elem) == 1)
             sset_add(newset, nodo->elem);   //Aggiungo l'elemento al nuovo set
         if(nodo->left)      //Avvio la ricorsione sul ramo sinistro
             sset_intersection_rec(nodo->left, s2, newset);
@@ -457,16 +470,31 @@ _Bool sset_extractMax(SortedSetADTptr ss, void**ptr) {
     return false;       
 }
 
-// restituisce il puntatore dell'elemento se c'e', NULL altrimenti
-void* sset_searchElem(SortedSetADTptr ss, void* elem){
-    if(isEmptySSet(ss) == 0){
-        TreeNodePtr nodo_ottimale = FindNodeFor(ss, elem);
+void sset_toArray_rec(TreeNode* nodo, void*** array){
+    if(nodo){
+        if(nodo->left)
+            sset_toArray_rec(nodo->left, array);
+        
+        *((*array)++) = nodo->elem;
 
-        if(nodo_ottimale && ss->compare(nodo_ottimale->elem, elem) == 0){
-            //Il nodo trovato coincide con quello dell'elemento
-            return nodo_ottimale->elem;
+        if(nodo->right){
+            sset_toArray_rec(nodo->right, array);
+        }
+    }
+}
+
+// crea un array con i contenuti del set (per l'implementazione con ARB in 
+// ordine di visita pre-order), NULL se errore
+void** sset_toArray(const SortedSetADT* ss){
+    void** array = NULL;
+
+    if(sset_size(ss) > 0){
+        array = malloc(sset_size(ss) * sizeof(void*));
+        void** a = array;
+        if(array){
+            sset_toArray_rec(ss->root, &a);
         }
     }
 
-    return NULL;
+    return array;
 }
