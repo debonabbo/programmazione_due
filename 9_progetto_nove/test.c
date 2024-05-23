@@ -86,5 +86,7 @@ int main(int argc, char *argv[]) {
 
     printf("\nDestroying contact book\n");
     dsCBook(&book);
+
+    printf("FINE :)");
     return 0;
 }
