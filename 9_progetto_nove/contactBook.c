@@ -168,7 +168,16 @@ _Bool cbook_dump(const ContactBookADT* book, FILE* fout) {
             fprintf(fout, "%s;\n", getUrl(rubrica[i]));
         }
 
+        free(rubrica);
         return true;
     }
     return false;
+}
+
+Contact** cbook_toArray(const ContactBookADT* book){
+    if(book){
+        return (Contact**)sset_toArray(book->contacts);
+    }
+
+    return NULL;
 }

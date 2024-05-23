@@ -22,5 +22,6 @@ _Bool cbook_remove(ContactBookADTptr, char* name, char* surname); // toglie un e
 ContactPtr cbook_search(const ContactBookADT*, char* name, char* surname); // restituisce un puntatore al contatto con dato nome e cognome (può essere usata per accedere o modificare il numero e url del contatto), NULL se non presente
 ContactBookADTptr cbook_load(FILE* fin); // carica una rubrica da file, NULL se errore
 _Bool cbook_dump(const ContactBookADT*, FILE* fout); // salva una rubrica su file, false se errore
+Contact** cbook_toArray(const ContactBookADT* book);
 
 #endif
