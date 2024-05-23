@@ -10,6 +10,8 @@ void stampa_menu(){
     printf("1. Crea una nuova rubrica.\n");
     printf("2. Inserisci un nuovo contatto.\n");
     printf("3. Salva la rubrica.\n");
+    printf("4. Carica una rubrica.\n");
+    printf("5. Visualizza la rubrica.\n");
     printf("--------------------------------\n");
     return;
 }
@@ -17,9 +19,11 @@ void stampa_menu(){
 ContactBookADTptr nuova_rubrica();
 void nuovo_contatto(ContactBookADTptr);
 void salva_rubrica(ContactBookADTptr);
+ContactBookADTptr carica_rubrica(ContactBookADTptr);
+void visualizza_rubrica(ContactBookADTptr);
 
 int main(){
-    ContactBookADTptr rubrica;
+    ContactBookADTptr rubrica = NULL;
 
     char c = 'b';
 
@@ -37,6 +41,12 @@ int main(){
                 break;
             case '3':
                 salva_rubrica(rubrica);
+                break;
+            case '4':
+                rubrica = carica_rubrica(rubrica);
+                break;
+            case '5':
+                visualizza_rubrica(rubrica);
                 break;
             default:
                 break;
@@ -130,4 +140,48 @@ void salva_rubrica(ContactBookADTptr rubrica){
 
     fclose(file);
     return;
+}
+
+ContactBookADTptr carica_rubrica(ContactBookADTptr oldrubrica){
+    char nome[30] = "";
+    printf("Inserisci il nome della rubrica: ");
+    scanf("%s", nome);
+    str_append(nome, ".csv");
+    FILE* file = fopen(nome, "r");
+    ContactBookADTptr newrubrica = cbook_load(file);
+
+    if(newrubrica)
+        printf("Operazione eseguita correttamente!\n");
+    else
+        printf("Operazione fallita :(\n");
+
+    fclose(file);
+
+    if(oldrubrica)
+        dsCBook(&oldrubrica);
+
+    return newrubrica;
+}
+
+void visualizza_rubrica(ContactBookADTptr rubrica){
+    if(!rubrica){
+        printf("ERRORE: Non hai una rubrica.\n");
+        return;
+    }
+
+    Contact** elenco_contatti = cbook_toArray(rubrica);
+    if(!elenco_contatti)
+        return;
+
+    int size = cbook_size(rubrica);
+    Contact* contatto;
+
+    printf("\n");
+    for (int i = 0; i < size; i++){
+        contatto = elenco_contatti[i];
+        printf("%s %s %s %s\n", getSurname(contatto), getName(contatto),
+                                getMobile(contatto), getUrl(contatto));
+    }
+    
+    free(elenco_contatti);
 }
