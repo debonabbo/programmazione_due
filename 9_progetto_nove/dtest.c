@@ -28,6 +28,8 @@ int main(){
     char c = 'b';
 
     while(c != '0'){
+        printf("\033[2J");      //Pulisci lo schermo
+        printf("\033[0;0H");    //Setta il cursore alla posizione 0
         switch (c)
         {
             case 'b':
@@ -177,11 +179,19 @@ void visualizza_rubrica(ContactBookADTptr rubrica){
     Contact* contatto;
 
     printf("\n");
+    // printf("╔═════════════════════════════════════╗\n");
+    // printf("║              RUBRICA                ║\n");
+    printf("+-------------------------------------+\n");
+    printf("|              RUBRICA                |\n");
+    printf("|                                     |\n");
     for (int i = 0; i < size; i++){
         contatto = elenco_contatti[i];
-        printf("%s %s %s %s\n", getSurname(contatto), getName(contatto),
+        printf("\t%s %s %s %s\n", getSurname(contatto), getName(contatto),
                                 getMobile(contatto), getUrl(contatto));
     }
+    printf("|                                     |\n");
+    printf("+-------------------------------------+\n");
+    // printf("╚═════════════════════════════════════╝\n");
     
     free(elenco_contatti);
 }
