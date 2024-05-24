@@ -158,7 +158,7 @@ ContactBookADTptr cbook_load(FILE* fin){
 // salva una rubrica su file, false se errore
 _Bool cbook_dump(const ContactBookADT* book, FILE* fout) {
     if(book && fout){
-        ContactPtr* rubrica = (ContactPtr*)sset_toArray(book->contacts);
+        ContactPtr* rubrica = (ContactPtr*)sset_toArray(book->contacts, false);
         int size = sset_size(book->contacts);
         
         for (size_t i = 0; i < size; i++){
@@ -176,7 +176,7 @@ _Bool cbook_dump(const ContactBookADT* book, FILE* fout) {
 
 Contact** cbook_toArray(const ContactBookADT* book){
     if(book){
-        return (Contact**)sset_toArray(book->contacts);
+        return (Contact**)sset_toArray(book->contacts, true);
     }
 
     return NULL;
