@@ -406,24 +406,22 @@ _Bool sset_max(const SortedSetADT* ss, void**ptr) {
 }
 
 void sset_extractMin_rec(TreeNodePtr* cur, void**ptr, int (*compare)(void*, void*)){
-    if(!(*cur)->left){      //Caso base
-        //Leggo il valore del min
-        *ptr = (*cur)->elem;
-        if((*cur)->right){      //Se ha un ramo destro
-            //Copio il suo nodo di destra all'interno del nodo attuale
-            TreeNodePtr old = (*cur)->right;
-            (*cur)->left = old->left;
-            (*cur)->elem = old->elem;
-            (*cur)->right = old->right;
-            //Cancello il vecchio nodo di destra
-            free(old);
-        } else {
-            //Devo rimuovere l'intero nodo
-            free(*cur);
-            *cur = NULL;
-        }
+    while((*cur)->left)        //Vado all'ultimo nodo a sinistra
+    cur = &((*cur)->left);
+    //Leggo il valore del min
+    *ptr = (*cur)->elem;
+    if((*cur)->right){      //Se ha un ramo destro
+        //Copio il suo nodo di destra all'interno del nodo attuale
+        TreeNodePtr old = (*cur)->right;
+        (*cur)->left = old->left;
+        (*cur)->elem = old->elem;
+        (*cur)->right = old->right;
+        //Cancello il vecchio nodo di destra
+        free(old);
     } else {
-        return sset_extractMin_rec(&((*cur)->left), ptr, compare);
+        //Devo rimuovere l'intero nodo
+        free(*cur);
+        *cur = NULL;
     }
     return;
 }
@@ -431,7 +429,23 @@ void sset_extractMin_rec(TreeNodePtr* cur, void**ptr, int (*compare)(void*, void
 // toglie e restituisce il primo elemento 
 _Bool sset_extractMin(SortedSetADTptr ss, void**ptr) {
     if(isEmptySSet(ss) == 0){
-        sset_extractMin_rec(&(ss->root), ptr, ss->compare);
+        TreeNodePtr* nodo = &(ss->root);    //Parto dalla root
+        while((*nodo)->left)        //Vado all'ultimo nodo a sinistra
+            nodo = &((*nodo)->left);
+        *ptr = (*nodo)->elem;       //prelevo l'elemento minimo
+        if((*nodo)->right){         //Se ha un ramo destro
+            //Copio il suo nodo di destra all'interno del nodo attuale
+            TreeNodePtr old = (*nodo)->right;
+            (*nodo)->left = old->left;
+            (*nodo)->elem = old->elem;
+            (*nodo)->right = old->right;
+            //Cancello il vecchio nodo di destra
+            free(old);
+        } else {
+            //Devo rimuovere l'intero nodo
+            free(*nodo);
+            *nodo = NULL;
+        }
         ss->size--;
         return true;
     }
@@ -439,60 +453,76 @@ _Bool sset_extractMin(SortedSetADTptr ss, void**ptr) {
 }
 
 void sset_extractMax_rec(TreeNodePtr* cur, void**ptr, int (*compare)(void*, void*)){
-    if(!(*cur)->right){     //Caso base
-        //Leggo il valore del max
-        *ptr = (*cur)->elem;
-        if((*cur)->left){      //Se ha un ramo sinistro
-            //Copio il suo nodo di sinistra all'interno del nodo attuale
-            TreeNodePtr old = (*cur)->left;
-            (*cur)->right = old->right;
-            (*cur)->elem = old->elem;
-            (*cur)->left = old->left;
-            //Cancello il vecchio nodo di sinistra
-            free(old);
-        } else {
-            //Devo rimuovere l'intero nodo
-            free(*cur);
-            *cur = NULL;
-        }
+    while((*cur)->right)
+        cur = &((*cur)->right);   //Vado all'ultimo nodo a destra
+    *ptr = (*cur)->elem;           //prelevo l'elemento massimo
+    if((*cur)->left){      //Se ha un ramo sinistro
+        //Copio il suo nodo di sinistra all'interno del nodo attuale
+        TreeNodePtr old = (*cur)->left;
+        (*cur)->right = old->right;
+        (*cur)->elem = old->elem;
+        (*cur)->left = old->left;
+        //Cancello il vecchio nodo di sinistra
+        free(old);
     } else {
-        return sset_extractMax_rec(&((*cur)->right), ptr, compare);
+        //Devo rimuovere l'intero nodo
+        free(*cur);
+        *cur = NULL;
     }
     return;
 }
 // toglie e restituisce l'ultimo elemento (0 se lista vuota, -1 se errore, 1 se restituisce elemento)
 _Bool sset_extractMax(SortedSetADTptr ss, void**ptr) {
     if(isEmptySSet(ss) == 0){
-        sset_extractMax_rec(&(ss->root), ptr, ss->compare);
+        TreeNodePtr* nodo = &(ss->root);    //Parto dalla root
+        while((*nodo)->right)
+            nodo = &((*nodo)->right);   //Vado all'ultimo nodo a destra
+        *ptr = (*nodo)->elem;           //prelevo l'elemento massimo
+        if((*nodo)->left){      //Se ha un ramo sinistro
+            //Copio il suo nodo di sinistra all'interno del nodo attuale
+            TreeNodePtr old = (*nodo)->left;
+            (*nodo)->right = old->right;
+            (*nodo)->elem = old->elem;
+            (*nodo)->left = old->left;
+            //Cancello il vecchio nodo di sinistra
+            free(old);
+        } else {
+            //Devo rimuovere l'intero nodo
+            free(*nodo);
+            *nodo = NULL;
+        }
         ss->size--;
         return true;
     }
     return false;       
 }
 
-void sset_toArray_rec(TreeNode* nodo, void*** array){
+void sset_toArray_rec(TreeNode* nodo, void*** array, _Bool sorted){
     if(nodo){
-        if(nodo->left)
-            sset_toArray_rec(nodo->left, array);
-        
+        if(nodo->left && sorted)        //ricorsione per array ordinato
+            sset_toArray_rec(nodo->left, array, sorted);
+
         *((*array)++) = nodo->elem;
 
+        if(nodo->left && !sorted)       //ricorsione per array pre-ordered
+            sset_toArray_rec(nodo->left, array, sorted);
+
         if(nodo->right){
-            sset_toArray_rec(nodo->right, array);
+            sset_toArray_rec(nodo->right, array, sorted);
         }
     }
 }
 
 // crea un array con i contenuti del set (per l'implementazione con ARB in 
 // ordine di visita pre-order), NULL se errore
-void** sset_toArray(const SortedSetADT* ss){
+void** sset_toArray(const SortedSetADT* ss, _Bool sorted){
     void** array = NULL;
 
     if(sset_size(ss) > 0){
         array = malloc(sset_size(ss) * sizeof(void*));
         void** a = array;
         if(array){
-            sset_toArray_rec(ss->root, &a);
+            sset_toArray_rec(ss->root, &a, sorted);
         }
     }
 
