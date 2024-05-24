@@ -30,6 +30,6 @@ _Bool sset_min(const SortedSetADT*, void**); // restituisce l'elemento minimo
 _Bool sset_max(const SortedSetADT*, void**); // restituisce l'elemento massimo
 _Bool sset_extractMin(SortedSetADTptr, void**); // toglie e restituisce l'elemento minimo
 _Bool sset_extractMax(SortedSetADTptr, void**); // toglie e restituisce l'elemento massimo
-void** sset_toArray(const SortedSetADT*); // crea un array con i contenuti del set (per l'implementazione con ARB in ordine di visita pre-order), NULL se errore
+void** sset_toArray(const SortedSetADT*, _Bool); // crea un array con i contenuti del set (per l'implementazione con ARB in ordine di visita pre-order), NULL se errore
 
 #endif
