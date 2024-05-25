@@ -16,10 +16,12 @@ ContactPtr mkContact(char* name, char* surname, char* mobile, char* url){
     
     contatto = malloc(sizeof(struct contact));
 
-    contatto->name = name;
-    contatto->surname = surname;
-    contatto->mobile = mobile;
-    contatto->url = url;
+    if(contatto){
+        contatto->name = name;
+        contatto->surname = surname;
+        contatto->mobile = mobile;
+        contatto->url = url;
+    }
 
     return contatto;
 }
@@ -32,31 +34,41 @@ void dsContact(ContactPtr* cntptr){
 }
 
 void updateMobile(ContactPtr cnt, char* newMobile){
-    cnt->mobile = newMobile;
+    if(cnt)
+        cnt->mobile = newMobile;
 
     return;
 }
 
 void updateUrl(ContactPtr cnt, char* newUrl){
-    cnt->url = newUrl;
+    if(cnt)
+        cnt->url = newUrl;
 
     return;
 }
 
 char* getName(const ContactPtr cnt){
-    return cnt->name;
+    if(cnt)
+        return cnt->name;
+    return 0;
 }
 
 char* getSurname(const ContactPtr cnt){
-    return cnt->surname;
+    if(cnt)
+        return cnt->surname;
+    return 0;
 }
 
 char* getMobile(const ContactPtr cnt){
-    return cnt->mobile;
+    if(cnt)
+        return cnt->mobile;
+    return 0;
 }
 
 char* getUrl(const ContactPtr cnt){
-    return cnt->url;
+    if(cnt)
+        return cnt->url;
+    return 0;
 }
 
 char toLow(char *c){
