@@ -124,23 +124,54 @@ void str_extract(char** str_in, char* str_out, char sep){
     }
 }
 
+size_t str_len(char* str){
+    size_t len = 0;
+    while((*str) != '\0'){
+        str++;
+        len++;
+    }
+    return len;
+}
+void str_copy(char* source, char* dest){
+    while((*source) != '\0')
+        *(dest++) = *(source++);
+    *dest = '\0';
+}
+
 // carica una rubrica da file, NULL se errore
 ContactBookADTptr cbook_load(FILE* fin){
     if(fin){
-        char* buffer = malloc(sizeof(char) * 100);
+        // alloco buffer per la lettura temporanea
+        char* buffer = malloc(sizeof(char) * 101);
         ContactBookADTptr cbook = mkCBook();
         if(cbook && buffer){
-            while(fgets(buffer, 100, fin) != NULL){
+            while(fgets(buffer, 101, fin) != NULL){
                 char* buf_temp = buffer;
-                char* surname = malloc(sizeof(char) * 30);
-                char* name = malloc(sizeof(char) * 30);
-                char* mobile = malloc(sizeof(char) * 30);
-                char* url = malloc(sizeof(char) * 30);
+
+                // variabili temporanee nello stack
+                char surname_temp[25];
+                char name_temp[25];
+                char mobile_temp[25];
+                char url_temp[25];
                 
-                str_extract(&buf_temp, surname, ';');
-                str_extract(&buf_temp, name, ';');
-                str_extract(&buf_temp, mobile, ';');
-                str_extract(&buf_temp, url, ';');
+                str_extract(&buf_temp, surname_temp, ',');
+                str_extract(&buf_temp, name_temp, ',');
+                str_extract(&buf_temp, mobile_temp, ',');
+                str_extract(&buf_temp, url_temp, ',');
+                
+                // variabili effettive nell'heap (alloco solo il necessario)
+                char* surname = malloc(sizeof(char)*(str_len(surname_temp)+1));
+                char* name = malloc(sizeof(char)*(str_len(name_temp)+1));
+                char* mobile = malloc(sizeof(char)*(str_len(mobile_temp)+1));
+                char* url = malloc(sizeof(char)*(str_len(url_temp)+1));
+
+                if(!surname || !name || !mobile || !url)
+                    return NULL;
+
+                str_copy(surname_temp, surname);
+                str_copy(name_temp, name);
+                str_copy(mobile_temp, mobile);
+                str_copy(url_temp, url);
 
                 ContactPtr newcontact = mkContact(name, surname, mobile, url);
                 if(newcontact){
@@ -162,10 +193,10 @@ _Bool cbook_dump(const ContactBookADT* book, FILE* fout) {
         int size = sset_size(book->contacts);
         
         for (size_t i = 0; i < size; i++){
-            fprintf(fout, "%s;", getSurname(rubrica[i]));
-            fprintf(fout, "%s;", getName(rubrica[i]));
-            fprintf(fout, "%s;", getMobile(rubrica[i]));
-            fprintf(fout, "%s;\n", getUrl(rubrica[i]));
+            fprintf(fout, "%s,", getSurname(rubrica[i]));
+            fprintf(fout, "%s,", getName(rubrica[i]));
+            fprintf(fout, "%s,", getMobile(rubrica[i]));
+            fprintf(fout, "%s,\n", getUrl(rubrica[i]));
         }
 
         free(rubrica);

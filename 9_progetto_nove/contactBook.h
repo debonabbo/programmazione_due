@@ -23,5 +23,7 @@ ContactPtr cbook_search(const ContactBookADT*, char* name, char* surname); // re
 ContactBookADTptr cbook_load(FILE* fin); // carica una rubrica da file, NULL se errore
 _Bool cbook_dump(const ContactBookADT*, FILE* fout); // salva una rubrica su file, false se errore
 Contact** cbook_toArray(const ContactBookADT* book);
+size_t str_len(char* str);
+void str_copy(char* source, char* dest);
 
 #endif

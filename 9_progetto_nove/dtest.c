@@ -9,15 +9,19 @@ void stampa_menu(){
     printf("0. Chiudi il programma.\n");
     printf("1. Crea una nuova rubrica.\n");
     printf("2. Inserisci un nuovo contatto.\n");
-    printf("3. Salva la rubrica.\n");
-    printf("4. Carica una rubrica.\n");
-    printf("5. Visualizza la rubrica.\n");
+    printf("3. Ricerca un contatto.\n");
+    printf("4. Rimuovi un contatto.\n");
+    printf("5. Salva la rubrica.\n");
+    printf("6. Carica una rubrica.\n");
+    printf("7. Visualizza la rubrica.\n");
     printf("--------------------------------\n");
     return;
 }
 
 ContactBookADTptr nuova_rubrica();
 void nuovo_contatto(ContactBookADTptr);
+void cerca_contatto(ContactBookADTptr);
+void cancella_contatto(ContactBookADTptr);
 void salva_rubrica(ContactBookADTptr);
 ContactBookADTptr carica_rubrica(ContactBookADTptr);
 void visualizza_rubrica(ContactBookADTptr);
@@ -42,12 +46,18 @@ int main(){
                 nuovo_contatto(rubrica);
                 break;
             case '3':
-                salva_rubrica(rubrica);
+                cerca_contatto(rubrica);
                 break;
             case '4':
-                rubrica = carica_rubrica(rubrica);
+                cancella_contatto(rubrica);
                 break;
             case '5':
+                salva_rubrica(rubrica);
+                break;
+            case '6':
+                rubrica = carica_rubrica(rubrica);
+                break;
+            case '7':
                 visualizza_rubrica(rubrica);
                 break;
             default:
@@ -83,27 +93,39 @@ void nuovo_contatto(ContactBookADTptr rubrica){
         return;
     }
 
-    char* nome    = malloc(sizeof(char) * 30);
-    char* cognome = malloc(sizeof(char) * 30);
-    char* mobile  = malloc(sizeof(char) * 30);
-    char* url     = malloc(sizeof(char) * 30);
+    // variabili temporanee nello stack
+    char surname_temp[25];
+    char name_temp[25];
+    char mobile_temp[25];
+    char url_temp[25];
 
-    if(!check_mem(nome, cognome, mobile, url)){
+    printf("Completa i campi seguenti:\n");
+    printf("Nome: ");
+    scanf(" %24[0-9a-zA-Z ]", name_temp);
+    printf("Cognome: ");
+    scanf(" %24[0-9a-zA-Z ]", surname_temp);
+    printf("Mobile: ");
+    scanf(" %24[0-9a-zA-Z+ ]", mobile_temp);
+    printf("Url: ");
+    scanf(" %24[0-9a-zA-Z.@ ]", url_temp);
+    
+    // variabili effettive nell'heap (alloco solo il necessario)
+    char* surname = malloc(sizeof(char)*(str_len(surname_temp)+1));
+    char* name = malloc(sizeof(char)*(str_len(name_temp)+1));
+    char* mobile = malloc(sizeof(char)*(str_len(mobile_temp)+1));
+    char* url = malloc(sizeof(char)*(str_len(url_temp)+1));
+
+    if(!check_mem(name, surname, mobile, url)){
         printf("ERRORE: Hai finito la memoria.\n");
         return;
     }
 
-    printf("Completa i campi seguenti:\n");
-    printf("Nome: ");
-    scanf("%s", nome);
-    printf("Cognome: ");
-    scanf("%s", cognome);
-    printf("Mobile: ");
-    scanf("%s", mobile);
-    printf("Url: ");
-    scanf("%s", url);
+    str_copy(surname_temp, surname);
+    str_copy(name_temp, name);
+    str_copy(mobile_temp, mobile);
+    str_copy(url_temp, url);
 
-    ContactPtr contatto = mkContact(nome, cognome, mobile, url);
+    ContactPtr contatto = mkContact(name, surname, mobile, url);
     if(contatto){
         if(cbook_add(rubrica, contatto)){
             printf("Contatto aggiunto correttamente!\n");
@@ -112,6 +134,50 @@ void nuovo_contatto(ContactBookADTptr rubrica){
     }
 
     printf("Operazione fallita, qualcosa e' andato storto :(\n");
+    return;
+}
+
+void stampa_contatto(ContactPtr contatto){
+    printf("+");
+    for (size_t i = 0; i < 80; i++) printf("-");
+    printf("+\n");
+    
+    printf("| %15s | %15s | %15s | %24s |\n",   
+            getName(contatto), getSurname(contatto), 
+            getMobile(contatto), getUrl(contatto));
+
+    printf("+");
+    for (size_t i = 0; i < 80; i++) printf("-");
+    printf("+\n");
+    return;
+}
+
+void cerca_contatto(ContactBookADTptr rubrica){
+    if(!rubrica){
+        printf("ERRORE: Non hai una rubrica.\n");
+        return;
+    }
+
+    char nome[30], cognome[30];
+    printf("RICERCA\nNome: ");
+    scanf(" %29[0-9a-zA-Z ]", &nome);
+    printf("Cognome: ");
+    scanf(" %29[0-9a-zA-Z ]", &cognome);
+
+    ContactPtr risultato = cbook_search(rubrica, nome, cognome);
+
+    if(risultato){
+        printf("Contatto trovato:\n");
+        stampa_contatto(risultato);
+        printf("\n");
+    } else {
+        printf("Nessun risultato :(\n");
+    }
+
+    return;
+}
+
+void cancella_contatto(ContactBookADTptr rubrica){
     return;
 }
 
@@ -176,21 +242,30 @@ void visualizza_rubrica(ContactBookADTptr rubrica){
         return;
 
     int size = cbook_size(rubrica);
-    Contact* contatto;
 
     printf("\n");
     // printf("╔═════════════════════════════════════╗\n");
     // printf("║              RUBRICA                ║\n");
-    printf("+-------------------------------------+\n");
-    printf("|              RUBRICA                |\n");
-    printf("|                                     |\n");
+    printf("+");
+    for (size_t i = 0; i < 80; i++) printf("-");
+    printf("+\n");
+    printf("|");
+    for (size_t i = 0; i < 36; i++) printf(" ");
+    printf("RUBRICA ");
+    for (size_t i = 0; i < 36; i++) printf(" ");
+    printf("|\n");
+    printf("|");
+    for (size_t i = 0; i < 80; i++) printf(" ");
+    printf("|\n");
     for (int i = 0; i < size; i++){
-        contatto = elenco_contatti[i];
-        printf("\t%s %s %s %s\n", getSurname(contatto), getName(contatto),
-                                getMobile(contatto), getUrl(contatto));
+        stampa_contatto(elenco_contatti[i]);
     }
-    printf("|                                     |\n");
-    printf("+-------------------------------------+\n");
+    printf("|");
+    for (size_t i = 0; i < 80; i++) printf(" ");
+    printf("|\n");
+    printf("+");
+    for (size_t i = 0; i < 80; i++) printf("-");
+    printf("+\n");
     // printf("╚═════════════════════════════════════╝\n");
     
     free(elenco_contatti);
