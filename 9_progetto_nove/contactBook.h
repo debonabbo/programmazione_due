@@ -25,5 +25,6 @@ _Bool cbook_dump(const ContactBookADT*, FILE* fout); // salva una rubrica su fil
 Contact** cbook_toArray(const ContactBookADT* book);
 size_t str_len(char* str);
 void str_copy(char* source, char* dest);
+void cbook_optimize(ContactBookADT*);   // ottimizza l'albero dei contatti
 
 #endif

@@ -40,7 +40,6 @@ ContactBookADTptr mkCBook() {
 // distrugge la rubrica, recuperando la memoria, false se errore
 _Bool dsCBook(ContactBookADTptr* book) {
     if(book && *book){
-        //TODO: i singoli contatti restano allocati?
         dsSSet(&(*book)->contacts);
         free(*book);
         *book = NULL;
@@ -53,10 +52,10 @@ _Bool dsCBook(ContactBookADTptr* book) {
 int isEmptyCBook(const ContactBookADT* book) {
     if(book){
         if(sset_size(book->contacts) > 0){
-            return 1;
+            return 0;
         }
 
-        return 0;
+        return 1;
     }
     return -1;
 }
@@ -89,10 +88,14 @@ _Bool cbook_remove(ContactBookADTptr book, char* name, char* surname) {
             if(contatto){
                 _Bool ret = sset_remove(book->contacts, contatto_temp);
                 // libero la memoria allocata
-                free(getSurname(contatto));
-                free(getName(contatto));
-                free(getMobile(contatto));
-                free(getUrl(contatto));
+                if(getSurname(contatto))
+                    free(getSurname(contatto));
+                if(getName(contatto))
+                    free(getName(contatto));
+                if(getMobile(contatto))
+                    free(getMobile(contatto));
+                if(getUrl(contatto))
+                    free(getUrl(contatto));
                 return ret;
             }
             dsContact(&contatto_temp);
@@ -193,10 +196,13 @@ _Bool cbook_dump(const ContactBookADT* book, FILE* fout) {
         int size = sset_size(book->contacts);
         
         for (size_t i = 0; i < size; i++){
-            fprintf(fout, "%s,", getSurname(rubrica[i]));
-            fprintf(fout, "%s,", getName(rubrica[i]));
-            fprintf(fout, "%s,", getMobile(rubrica[i]));
-            fprintf(fout, "%s,\n", getUrl(rubrica[i]));
+            fprintf(fout, "%s", getSurname(rubrica[i]));
+            fprintf(fout, ",%s", getName(rubrica[i]));
+            if(str_len(getMobile(rubrica[i])) > 0)
+                fprintf(fout, ",%s", getMobile(rubrica[i]));
+            if(str_len(getUrl(rubrica[i])) > 0)
+                fprintf(fout, ",%s", getUrl(rubrica[i]));
+            //printf("\n");
         }
 
         free(rubrica);
@@ -211,4 +217,37 @@ Contact** cbook_toArray(const ContactBookADT* book){
     }
 
     return NULL;
+}
+
+void cbook_optimize_rec(ContactBookADT* book, Contact** array, 
+size_t left, size_t right){
+    if(right - left == 0){
+        cbook_add(book, array[left]);
+    } else if(right - left == 1){
+        cbook_add(book, array[left]);
+        cbook_add(book, array[right]);
+    } else {
+        size_t center = ((right-left)/2)+left;
+
+        cbook_add(book, array[center]);
+
+        cbook_optimize_rec(book, array, left, center-1);
+        cbook_optimize_rec(book, array, center+1, right);
+    }
+}
+
+
+void cbook_optimize(ContactBookADT* book){
+    if(book){
+        Contact** elenco_contatti = cbook_toArray(book);
+        if(!elenco_contatti)
+            return;
+
+        int size = cbook_size(book);
+
+        free(book->contacts);
+        book->contacts = mkSSet(contact_cmp);
+
+        cbook_optimize_rec(book, elenco_contatti, 0, size-1);
+    }
 }
