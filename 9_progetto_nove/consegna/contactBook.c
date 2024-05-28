@@ -155,7 +155,7 @@ ContactBookADTptr cbook_load(FILE* fin) {
                 str_extract(&buf_temp, surname_temp, ',');
                 str_extract(&buf_temp, name_temp, ',');
                 str_extract(&buf_temp, mobile_temp, ',');
-                str_extract(&buf_temp, url_temp, ',');
+                str_extract(&buf_temp, url_temp, '\n');
                 
                 // variabili effettive nell'heap (alloco solo il necessario)
                 char* surname = malloc(sizeof(char)*(str_len(surname_temp)+1));
@@ -193,11 +193,9 @@ _Bool cbook_dump(const ContactBookADT* book, FILE* fout) {
         for (size_t i = 0; i < size; i++){
             fprintf(fout, "%s", getSurname(rubrica[i]));
             fprintf(fout, ",%s", getName(rubrica[i]));
-            if(str_len(getMobile(rubrica[i])) > 0)
-                fprintf(fout, ",%s", getMobile(rubrica[i]));
-            if(str_len(getUrl(rubrica[i])) > 0)
-                fprintf(fout, ",%s", getUrl(rubrica[i]));
-            // printf("\n");
+            fprintf(fout, ",%s", getMobile(rubrica[i]));
+            fprintf(fout, ",%s", getUrl(rubrica[i]));
+            printf("\n");
         }
 
         free(rubrica);
