@@ -7,40 +7,67 @@ struct intNode {
     IntList next;
 };
 
-void reverse (IntList* lsPtr) {
-    if(!lsPtr || !*lsPtr)
+// void reverse_old (IntList* lsPtr) {
+//     if(!lsPtr || !*lsPtr)
+//         return;
+
+//     IntList a, b;
+//     int temp;
+    
+//     size_t size = 0;
+    
+//     for(a = *lsPtr; a != NULL; a = a->next) { size++; }
+
+//     //printf("SIZE: %zu\n", size);
+    
+//     a = *lsPtr;
+//     for(size_t i = 0; i < (size-i); i++){
+//         b = *lsPtr;
+//         for(size_t j = 0; j < (size-1-i); j++){
+//             b = b->next;
+//         }
+//         printf("Inverto %d e %d\n", a->data, b->data);
+//         temp = a->data;
+//         a->data = b->data;
+//         b->data = temp;
+//         a = a->next;
+//     }
+    
+//     return;
+// }
+
+void reverse(IntList* plst){
+    if(!plst || !*plst)
         return;
 
-    IntList a, b;
-    int temp;
-    
-    size_t size = 0;
-    
-    for(a = *lsPtr; a != NULL; a = a->next) { size++; }
+    IntList prev = NULL, next = NULL, curr = *plst;
 
-    //printf("SIZE: %zu\n", size);
-    
-    a = *lsPtr;
-    for(size_t i = 0; i < (size-i); i++){
-        b = *lsPtr;
-        for(size_t j = 0; j < (size-1-i); j++){
-            b = b->next;
-        }
-        printf("Inverto %d e %d\n", a->data, b->data);
-        temp = a->data;
-        a->data = b->data;
-        b->data = temp;
-        a = a->next;
+    while(curr != NULL){
+        next = curr->next;
+
+        curr->next = prev;
+        prev = curr;
+
+        curr = next;
     }
-    
-    return;
+
+    *plst = prev;
 }
 
-// void reverse(IntList* plst){
-//     if(!plst || !*plst)
-//         return;
-//     int
-// }
+IntList swap_rec(IntList prev, IntList curr){
+    if(!curr){
+        return prev;
+    } else {
+        IntList next = curr->next;
+        curr->next = prev;
+
+        return swap_rec(curr, next);
+    }
+}
+
+void reverse_rec(IntList* plst){
+    *plst = swap_rec(NULL, *plst);
+}
 
 int main(){
     printf("Inizio\n");
@@ -77,6 +104,14 @@ int main(){
     reverse(&primo);
     
     printf("Dopo: ");
+    for (IntList a = primo; a != NULL; a = a->next){
+        printf("%d ", a->data);
+    }
+    printf("\n");
+
+    reverse_rec(&primo);
+
+    printf("Dopo ricorsiva: ");
     for (IntList a = primo; a != NULL; a = a->next){
         printf("%d ", a->data);
     }
