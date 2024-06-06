@@ -86,12 +86,14 @@ int main(){
 
     ListNodePtr list11 = fromTo(1, 5);
     printf("Test Case 11: Reverse a list with multiple elements: ");
-    ListNodePtr reversedList11 = reverse_rec(list11);
+    ListNodePtr reversedList11 = reverse(list11);
+    // ListNodePtr reversedList11 = reverse_rec(list11);
     printList(reversedList11); // Expected output: 5 4 3 2 1
 
     ListNodePtr list12 = fromTo(1, 1);
     printf("Test Case 12: Reverse a list with a single element: ");
-    ListNodePtr reversedList12 = reverse_rec(list12);
+    ListNodePtr reversedList12 = reverse(list12);
+    // ListNodePtr reversedList12 = reverse_rec(list12);
     printList(reversedList12); // Expected output: 1 
 
     // Test case 17: zipSum_rec with different lists

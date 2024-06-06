@@ -1,7 +1,7 @@
 #include <stdlib.h>
 #include "list_rec.h"
 
-// Ricorsione di fromTo
+// Ricorsione di fromTo()
 ListNodePtr fromTo_rec(int m, int n){
     if(m > n){
         return NULL;
@@ -23,23 +23,56 @@ ListNodePtr fromTo(int m, int n){
 }
 
 _Bool included_rec(ListNodePtr ls1, ListNodePtr ls2){
+    if(!ls1)
+        return 1;
+    if(!ls2)
+        return 0;
 
+    if(ls1->data == ls2->data)
+        return 1 && included_rec(ls1->next, ls2->next);
+    return included_rec(ls1, ls2->next);
 }
 
-ListNodePtr reverse_rec(ListNodePtr ls){
-
+// Ricorsione di reverse()
+ListNodePtr reverse_rec(ListNodePtr ls, ListNodePtr mia){
+    if(!ls){ 
+        return mia;
+    } else {
+        ListNodePtr new = malloc(sizeof(struct listNode));
+        new->data = ls->data;
+        new->next = mia;
+        return reverse_rec(ls->next, new);
+    }
 }
 
-// Ricorsione di zipSum
+// ListNodePtr reverse_rec(ListNodePtr ls){
+//     if(!ls) return NULL;
+//     if(!ls->next) return ls;
+//     ListNodePtr restante = reverse_rec(ls->next);
+//     ls->next->next = ls;
+//     ls->next = NULL;
+//     return restante;
+// }
+
+ListNodePtr reverse(ListNodePtr ls){
+    return reverse_rec(ls, NULL);
+}
+
+// Ricorsione di zipSum()
 ListNodePtr zipSum_rec(ListNodePtr ls1, ListNodePtr ls2){
-
+    if(!ls1 || !ls2){
+        return NULL;
+    } else {
+        ListNodePtr a = malloc(sizeof(struct listNode));
+        a->data = ls1->data;
+    }
 }
 
 ListNodePtr zipSum(ListNodePtr ls1, ListNodePtr ls2){
 
 }
 
-// Ricorsione di occurrences
+// Ricorsione di occurrences()
 int occurrences_rec(ListNodePtr ls, int x){
 
 }

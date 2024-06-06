@@ -32,7 +32,7 @@ _Bool included_rec(ListNodePtr ls1, ListNodePtr ls2);
  * @param ls la lista da invertire
  * @return Il puntatore al primo elemento della nuova lista invertita
 */
-ListNodePtr reverse_rec(ListNodePtr ls);
+ListNodePtr reverse(ListNodePtr ls);
 
 /**
  * @brief Restituisce una nuova lista i cui elementi sono le somme a coppie
